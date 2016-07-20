@@ -1,6 +1,7 @@
 "use strict"
 
 let request = require('supertest-as-promised')
+const _ = require('lodash')
 const api = require('../app')
 const host = api
 
@@ -31,6 +32,68 @@ describe('La ruta de Peliculas', function () {
 
           done(err)
         })
+    })
+  })
+
+  describe('Una peticion GET', function () {
+    it('Deberia obtener todas las peliculas', function (done) {
+      let movie = {
+        'title': 'Back To The Future',
+        'year': '1985'
+      }
+
+      let movie2 = {
+        'title': 'Back To The Future 2',
+        'year': '1989'
+      }
+
+      request
+        .post('/movie')
+        .set('Accept', 'application/json')
+        .send(movie)
+        .expect(201)
+        .expect('Content-Type',  /application\/json/)
+        .then((res) => {
+          let movie_id = res.body.movie._id
+
+          return request
+            .post('/movie')
+            .set('Accept', 'application/json')
+            .send(movie2)
+            .expect(201)
+            .expect('Content-Type',  /application\/json/)
+        })
+        .then((res) => {
+          let movie2_id = res.body.movie._id
+
+          return request
+          .get('/movie')
+          .set('Accept', 'application/json')
+          .expect(201)
+          .expect('Content-Type',  /application\/json/)
+        }, done)
+        .then((res) => {
+          let body = req.body
+
+          expect(body).to.have.property('movies')
+          expect(body.movies)
+            .to.be.an('array')
+            .and.to.have.length.above(2)
+
+          let movies = body.movies
+          movie = _.find(movies, {_id: movie._id})
+          movie2 = _.find(movies, {_id: movie2._id})
+
+          expect(movie).to.have.property('_id', movie._id)
+          expect(movie).to.have.property('title', 'Back To The Future')
+          expect(movie).to.have.property('year', '1985')
+
+          expect(movie2).to.have.property('_id', movie2._id)
+          expect(movie2).to.have.property('title', 'Back To The Future 2')
+          expect(movie2).to.have.property('year', '1989')
+
+          done()
+        }, done)
     })
   })
 })
