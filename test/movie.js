@@ -155,6 +155,7 @@ describe('La ruta de Peliculas', function () {
           return request
             .put('/movie/' + movie_id)
             .set('Accept', 'application/json')
+            .send(movie)
             .expect(200)
             .expect('Content-Type',  /application\/json/)
         })

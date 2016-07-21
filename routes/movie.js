@@ -36,13 +36,32 @@ router
   if (!req.params.id) {
     res
       .status(403)
-      .json({error: true, message: 'Paramrtro invalido'})
+      .json({error: true, message: 'Paramertro invalido'})
   }
 
   let movie = Movie[req.params.id]
   res
     .status(200)
     .json({movie: movie})
+})
+
+.put('/:id', function (req, res, next) {
+  console.log('PUT:id ', req.params.id)
+  if (!req.params.id && !req.body) {
+    res
+      .status(403)
+      .json({error: true, message: 'Paramertro invalido'})
+  }
+
+  let new_movie = req.body
+  new_movie._id = parseInt(req.params.id, 10)
+
+  Movie[new_movie._id] = new_movie
+  new_movie = Movie[new_movie._id]
+  
+  res
+    .status(200)
+    .json({movie: new_movie})
 })
 
 module.exports = router
