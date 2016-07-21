@@ -58,10 +58,26 @@ router
 
   Movie[new_movie._id] = new_movie
   new_movie = Movie[new_movie._id]
-  
+
   res
     .status(200)
     .json({movie: new_movie})
+})
+
+.delete('/:id', function (req, res, next) {
+  console.log('DELETE:id ', req.params.id)
+  if (!req.params.id) {
+    res
+      .status(403)
+      .json({error: true, message: 'Paramertro invalido'})
+  }
+
+  let id = req.params.id
+  delete Movie[id]
+
+  res
+    .status(400)
+    .json({})
 })
 
 module.exports = router
