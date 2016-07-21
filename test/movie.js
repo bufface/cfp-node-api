@@ -37,6 +37,9 @@ describe('La ruta de Peliculas', function () {
 
   describe('Una peticion GET', function () {
     it('Deberia obtener todas las peliculas', function (done) {
+      let movie_id
+      let movie2_id
+
       let movie = {
         'title': 'Back To The Future',
         'year': '1985'
@@ -54,7 +57,7 @@ describe('La ruta de Peliculas', function () {
         .expect(201)
         .expect('Content-Type',  /application\/json/)
         .then((res) => {
-          let movie_id = res.body.movie._id
+          movie_id = res.body.movie._id
 
           return request
             .post('/movie')
@@ -64,16 +67,16 @@ describe('La ruta de Peliculas', function () {
             .expect('Content-Type',  /application\/json/)
         })
         .then((res) => {
-          let movie2_id = res.body.movie._id
+          movie2_id = res.body.movie._id
 
           return request
           .get('/movie')
           .set('Accept', 'application/json')
-          .expect(201)
+          .expect(200)
           .expect('Content-Type',  /application\/json/)
         }, done)
         .then((res) => {
-          let body = req.body
+          let body = res.body
 
           expect(body).to.have.property('movies')
           expect(body.movies)
@@ -81,14 +84,13 @@ describe('La ruta de Peliculas', function () {
             .and.to.have.length.above(2)
 
           let movies = body.movies
-          movie = _.find(movies, {_id: movie._id})
-          movie2 = _.find(movies, {_id: movie2._id})
-
-          expect(movie).to.have.property('_id', movie._id)
+          movie = _.find(movies, {_id: movie_id})
+          movie2 = _.find(movies, {_id: movie2_id})
+          expect(movie).to.have.property('_id', movie_id)
           expect(movie).to.have.property('title', 'Back To The Future')
           expect(movie).to.have.property('year', '1985')
 
-          expect(movie2).to.have.property('_id', movie2._id)
+          expect(movie2).to.have.property('_id', movie2_id)
           expect(movie2).to.have.property('title', 'Back To The Future 2')
           expect(movie2).to.have.property('year', '1989')
 

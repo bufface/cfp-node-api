@@ -2,6 +2,7 @@
 
 var express = require('express')
 var router = express.Router()
+var _ = require('lodash');
 
 var Movie = {};
 
@@ -21,6 +22,13 @@ router
   res
     .status(201)
     .json({movie: Movie[_movie._id]})
-});
+})
+
+.get('/', function (req, res, next) {
+  console.log('GET: ', req.body)
+  res
+    .status(200)
+    .json({movies: _.values(Movie)})
+})
 
 module.exports = router
