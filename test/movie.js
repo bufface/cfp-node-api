@@ -134,4 +134,40 @@ describe('La ruta de Peliculas', function () {
         }, done)
     })
   })
+
+  describe('Una peticion PUT /:id', function () {
+    it('Deberia modificar una pelicula', function (done) {
+      let movie_id
+      let movie = {
+        title: 'Pulp Fiction',
+        year: '1993'
+      }
+
+      request
+        .post('/movie')
+        .set('Accept', 'application/json')
+        .send(movie)
+        .expect(201)
+        .expect('Content-Type',  /application\/json/)
+        .then((res) => {
+          movie_id = res.body.movie._id
+
+          return request
+            .put('/movie/' + movie_id)
+            .set('Accept', 'application/json')
+            .expect(200)
+            .expect('Content-Type',  /application\/json/)
+        })
+        .then((res) => {
+          let body = res.body
+          expect(body).to.have.property('movie')
+
+          movie = body.movie
+          expect(movie).to.have.property('_id', movie_id)
+          expect(movie).to.have.property('title', 'Pulp Fiction')
+          expect(movie).to.have.property('year', '1993')
+          done()
+        }, done)
+    })
+  })
 })
