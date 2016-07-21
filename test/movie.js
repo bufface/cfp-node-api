@@ -171,4 +171,35 @@ describe('La ruta de Peliculas', function () {
         }, done)
     })
   })
+
+  describe('Una peticion DELETE /:id', function () {
+    it('Deberia eliminar una pelicula', function (done) {
+      let movie_id
+      let movie = {
+        title: 'Crepusculo',
+        year: '2008'
+      }
+
+      request
+        .post('/movie')
+        .set('Accept', 'application/json')
+        .send(movie)
+        .expect(201)
+        .expect('Content-Type',  /application\/json/)
+        .then((res) => {
+          movie_id = res.body.movie._id
+
+          return request
+            .delete('/movie/' + movie_id)
+            .set('Accept', 'application/json')
+            .expect(400)
+            .expect('Content-Type',  /application\/json/)
+        })
+        .then((res) => {
+          let body = res.body
+          expect(body).to.be.empty
+          done()
+        }, done)
+    })
+  })
 })
