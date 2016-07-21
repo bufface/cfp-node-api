@@ -31,4 +31,18 @@ router
     .json({movies: _.values(Movie)})
 })
 
+.get('/:id', function (req, res, next) {
+  console.log('GET:id ', req.params.id)
+  if (!req.params.id) {
+    res
+      .status(403)
+      .json({error: true, message: 'Paramrtro invalido'})
+  }
+
+  let movie = Movie[req.params.id]
+  res
+    .status(200)
+    .json({movie: movie})
+})
+
 module.exports = router
