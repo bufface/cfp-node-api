@@ -29,7 +29,7 @@ describe('Ruta para los usuarios', function() {
       request
       .post('/user')
       .set('Accept', 'application/json')
-      .set(user)
+      .send(user)
       .expect(201)
       .expect('Content-Type',  /application\/json/)
       .end((err, res) => {

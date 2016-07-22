@@ -15,6 +15,14 @@ function encrypt(text) {
   return crypted
 }
 
+function decrypt(text) {
+  let decipher = crypto.createDecipher(algorithm, password)
+  let dec = decipher.update(text, 'hex', 'utf8')
+  dec += decipher.final('utf8')
+
+  return dec
+}
+
 router
 .post('/', function(req, res, next) {
   if (!req.body) {
@@ -24,7 +32,8 @@ router
   }
 
   let _user = req.body
-  new User.findOne({username: _user.username},
+
+  User.findOne({username: _user.username},
     (err, user) => {
       if (err) {
         res
@@ -32,9 +41,16 @@ router
           .json({error: true, message: err})
       }
       else if (user) {
-        res
-          .status(200)
-          .json({error: true, message: 'El usuario existe'})
+        if (decrypt(user.password) === _user.password) {
+          res
+            .status(201)
+            .json({user: user})
+        }
+        else {
+          res
+            .status(403)
+            .json({error: true, message: 'El usuario ya existe'})
+        }
       }
       else {
         new User({
