@@ -20,7 +20,7 @@ describe('Ruta para los usuarios', function() {
       mongoose.models = {}
     })
 
-    it.only('deberia crear un nuevo usuario', function(done) {
+    it('deberia crear un nuevo usuario', function(done) {
       let user = {
         'username': 'Cristian',
         'password': 'cr1st14n'
