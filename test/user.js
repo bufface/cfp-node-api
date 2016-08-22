@@ -38,7 +38,6 @@ describe('Ruta para los usuarios', function() {
 
         let user = body.user
         expect(user).to.have.property('_id')
-        expect(user).to.have.property('password')
         expect(user).to.have.property('username', 'Cristian')
         done(err)
       })
