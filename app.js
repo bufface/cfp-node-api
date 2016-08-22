@@ -2,13 +2,20 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
+var monngose = require('mongoose');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var config = require('./lib/config')
+var auth_middleware = require('./lib/middleware/auth')
 
 var app = express();
 
+monngose.createConnection(config.database);
+// monngose.connect(config.database);
+
 var index = require('./routes/index')
 var movie = require('./routes/movie')
+
 var user = require('./routes/user')
 var auth = require('./routes/auth')
 
@@ -20,10 +27,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Rutas inseguras
 app.use('/', index)
-app.use('/movie', movie)
 app.use('/user', user)
 app.use('/auth', auth)
+
+// Middleware
+app.use(auth_middleware);
+
+// Rutas Seguras
+app.use('/movie', movie)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
